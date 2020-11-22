@@ -1,3 +1,4 @@
+
 LESSON_4
 
 
@@ -48,9 +49,9 @@ VIEW `employees`.`max_calary` AS
     
   LIMIT 0 , 1
 
-_________________________________________________________________________________________
-2.Создать функцию, которая найдет менеджера по имени и фамилии.
-
+___________________________________________________________________________________________
+2.
+Создать функцию, которая найдет менеджера по имени и фамилии.
 
 -------------request----------------------
 CREATE DEFINER=`root`@`localhost` FUNCTION `meneger_search`(name_param CHAR(30)) 
@@ -94,11 +95,11 @@ SELECT
         
 RETURN result_meneger;
 END$$
-
 DELIMITER ;
 
 SQL script was successfully applied to the database.
 _____________________________________________________________________________________
+
 3.Создать триггер, который при добавлении нового сотрудника будет выплачивать ему вступительный бонус, 
 занося запись в таблицу salary.
 
@@ -107,7 +108,7 @@ CREATE DEFINER = CURRENT_USER TRIGGER `employees`.`employees_AFTER_INSERT_1`
 AFTER INSERT ON `employees` FOR EACH ROW 
 
 BEGIN
-INSERT INTO employees.salaries  (emp_no, salary, from_date, to_date) 
+INSERT INTO employees.salaries (emp_no, salary, from_date, to_date) 
 VALUES
 (NEW.emp_no, 100, NEW.from_date, NEW.to_date);
 END
