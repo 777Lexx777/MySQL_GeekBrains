@@ -1,0 +1,403 @@
+------------Практическая работа---------------------
+
+1.
+DELETE FROM employees.employees  
+WHERE emp_no = 10001;
+
+DELETE FROM employees.employees  
+WHERE emp_no = 10002;
+_______________________________________________________
+16:37:54	DELETE FROM employees.employees   WHERE emp_no = 10001	1 row(s) affected	0.016 sec
+16:37:54	DELETE FROM employees.employees   WHERE emp_no = 10002	1 row(s) affected	0.000 sec
+
+
+2.
+INSERT INTO employees.employees 
+VALUES 
+
+(10001,'1953-09-02','Georgi','Facello','M','1986-06-26'),
+
+(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+_______________________________________________________
+
+16:41:57	INSERT INTO employees.employees  VALUES  
+(10001,'1953-09-02','Georgi','Facello','M','1986-06-26'), 
+(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21')	
+2 row(s) affected Records: 2  Duplicates: 0  Warnings: 0	0.469 sec
+
+
+3.
+SELECT * FROM employees.salaries WHERE `from_date` = '1986-06-26'
+________________________________________________________
+16:46:59	SELECT * FROM employees.salaries WHERE `from_date` = '1986-06-26' LIMIT 0, 200	87 row(s) returned	1.266 sec / 0.000 sec
+
+
+4.
+SELECT d.*, e.first_name, e.last_name
+
+FROM employees.departments d
+  
+LEFT JOIN employees.dept_manager m ON d.dept_no = m.dept_no
+  
+LEFT JOIN employees.employees e ON m.emp_no = e.emp_no;
+_____________________________________________________________
+
+16:56:05	SELECT d.*, e.first_name, e.last_name FROM employees.departments d   
+LEFT JOIN employees.dept_manager m ON d.dept_no = m.dept_no   
+LEFT JOIN employees.employees e ON m.emp_no = e.emp_no 
+LIMIT 0, 200	24 row(s) returned	0.016 sec / 0.000 sec
+
+
+5.
+SELECT e.first_name, e.last_name, MAX(s.salary) max_salary
+
+FROM employees.dept_manager m
+  
+LEFT JOIN employees.employees e ON m.emp_no = e.emp_no
+  
+LEFT JOIN employees.salaries s on m.emp_no = s.emp_no
+  
+GROUP BY e.first_name, e.last_name
+  
+ORDER BY max_salary DESC;
+____________________________________________________________________________
+
+17:00:10	SELECT e.first_name, e.last_name, MAX(s.salary) max_salary FROM employees.dept_manager m  
+LEFT JOIN employees.employees e ON m.emp_no = e.emp_no   LEFT JOIN employees.salaries s on m.emp_no = s.emp_no   
+GROUP BY e.first_name, e.last_name   ORDER BY max_salary DESC 
+LIMIT 0, 200	24 row(s) returned	0.016 sec / 0.000 sec
+===========================================================================================================================================
+
+-------------Практическое задание---------------------
+
+1.База данных «Страны и города мира»:
+
+а)Сделать запрос, в котором мы выберем все данные о городе – регион, страна.
+б)Выбрать все города из Московской области.
+_______________________________________________
+-----------запрос-------------
+а)SELECT c.title,r.title , cn.title
+
+FROM geodata._cities c
+  
+LEFT JOIN geodata._countries cn ON c.country_id = cn.id
+  
+LEFT JOIN geodata._regions r ON c.region_id = r.id
+LIMIT 0, 10;
+-----------результат-------------------
++-----------------+-----------------------+-----------+
+| title           | title                 | title     |
++-----------------+-----------------------+-----------+
+| Москва          | NULL                  | Россия    |
+| Санкт-Петербург | NULL                  | Россия    |
+| Herzliya        | NULL                  | Израиль   |
+| Отрадное        | Ленинградская область | Россия    |
+| Чоп             | Закарпатская область  | Украина   |
+| Череповец       | Вологодская область   | Россия    |
+| Buenos Aires    | Distrito Federal      | Аргентина |
+| Волгоград       | Волгоградская область | Россия    |
+| Северодвинск    | Архангельская область | Россия    |
+| Пушкин          | NULL                  | Россия    |
++-----------------+-----------------------+-----------+
+17:40:25	SELECT c.title,r.title , cn.title FROM geodata._cities c   
+LEFT JOIN geodata._countries cn ON c.country_id = cn.id   LEFT JOIN geodata._regions r ON c.region_id = r.id 
+LIMIT 0, 1000	1000 row(s) returned	0.000 sec / 0.000 sec
+
+б)
+------------- запрос------------------------------
+--Комент из задания я не понял вывести только города или ещё и подтверждение что они из Моск.обл по этоу 2 таблички.
+mysql> SELECT c.title,r.title , cn.title 
+FROM geodata._cities c  
+LEFT JOIN geodata._countries cn ON c.country_id = cn.id  
+LEFT JOIN geodata._regions r ON c.region_id = r.id  
+WHERE r.title like "Московская область" 
+LIMIT 0, 10;
+-----------результат-------------------
+
++---------------+--------------------+--------+
+| title         | title              | title  |
++---------------+--------------------+--------+
+| Балашиха      | Московская область | Россия |
+| Видное        | Московская область | Россия |
+| Жуковский     | Московская область | Россия |
+| Коломна       | Московская область | Россия |
+| Люберцы       | Московская область | Россия |
+| Орехово-Зуево | Московская область | Россия |
+| Пущино        | Московская область | Россия |
+| Раменское     | Московская область | Россия |
+| Сходня        | Московская область | Россия |
+| Химки         | Московская область | Россия |
++---------------+--------------------+--------+
+10 rows in set (0.00 sec)
+17:57:53	SELECT c.title,r.title , cn.title 
+FROM geodata._cities c   
+LEFT JOIN geodata._countries cn ON c.country_id = cn.id   
+LEFT JOIN geodata._regions r ON c.region_id = r.id   WHERE r.title like "Московская область"   
+LIMIT 0, 10	10 row(s) returned	0.000 sec / 0.000 sec
+----------------------результат 2--------------------------
+mysql> SELECT c.title FROM geodata._cities c  
+LEFT JOIN geodata._countries cn ON c.country_id = cn.id  
+LEFT JOIN geodata._regions r ON c.region_id = r.id 
+WHERE r.title like "Московская область"  LIMIT 0, 10;
++---------------+
+| title         |
++---------------+
+| Балашиха      |
+| Видное        |
+| Жуковский     |
+| Коломна       |
+| Люберцы       |
+| Орехово-Зуево |
+| Пущино        |
+| Раменское     |
+| Сходня        |
+| Химки         |
++---------------+
+10 rows in set (0.00 sec)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2. База данных «Сотрудники»:
+
+а)Выбрать среднюю зарплату по отделам.
+б)Выбрать максимальную зарплату у сотрудника.
+в)Удалить одного сотрудника, у которого максимальная зарплата.
+г)Посчитать количество сотрудников во всех отделах.
+д)Найти количество сотрудников в отделах и посмотреть, сколько всего денег получает отдел.
+_________________________________________________________________________________________
+
+а)
+
+-----------request----------------
+
+mysql> SELECT d.dept_name, AVG(salary) AS avg_salary 
+FROM employees.dept_manager m 
+LEFT JOIN employees.departments d ON m.dept_no = d.dept_no  
+LEFT JOIN employees.salaries s on m.emp_no = s.emp_no  
+GROUP BY d.dept_name  ORDER BY avg_salary DESC LIMIT 0, 20;
+
+-------------result------------------------
+
++--------------------+------------+
+| dept_name          | avg_salary |
++--------------------+------------+
+| Marketing          | 88371.6857 |
+| Sales              | 85738.7647 |
+| Research           | 77535.1818 |
+| Finance            | 70815.8889 |
+| Quality Management | 67130.9355 |
+| Development        | 59658.1176 |
+| Human Resources    | 58286.0556 |
+| Production         | 56233.4000 |
+| Customer Service   | 54959.6724 |
++--------------------+------------+
+9 rows in set (0.01 sec)
+
+23:27:14	SELECT d.dept_name, AVG(salary) AS avg_salary  
+FROM employees.dept_manager m  
+LEFT JOIN employees.departments d ON m.dept_no = d.dept_no   
+LEFT JOIN employees.salaries s on m.emp_no = s.emp_no   
+GROUP BY d.dept_name   ORDER BY avg_salary 
+DESC LIMIT 0, 1000	9 row(s) returned	0.000 sec / 0.000 sec
+
+
+б)
+f
+-------------request-----------------------
+SELECT e.first_name, e.last_name,e.emp_no, MAX(s.salary) 
+ 
+FROM  employees.employees e
+ 
+LEFT JOIN employees.salaries s on e.emp_no = s.emp_no
+  
+ORDER BY s.salary 
+DESC
+ LIMIT 0, 1;
+
+-------------result------------------------
++------------+-----------+--------+---------------+
+| first_name | last_name | emp_no | MAX(s.salary) |
++------------+-----------+--------+---------------+
+| Tokuyasu   | Pesch     |  43624 |        158220 |
++------------+-----------+--------+---------------+
+1 row in set (7.70 sec)
+
+mysql>
+
+01:48:42	SELECT e.first_name, e.last_name,e.emp_no, MAX(s.salary)   
+FROM  employees.employees e    
+LEFT JOIN employees.salaries s on e.emp_no = s.emp_no  
+ORDER BY s.salary 
+DESC  LIMIT 0, 1	
+1 row(s) returned	7.906 sec / 0.000 sec
+
+
+в)
+
+-------------request-----------------------
+SELECT e.first_name, e.last_name,e.emp_no, MAX(s.salary) max_salary 
+ 
+FROM  employees.employees e 
+ 
+LEFT JOIN employees.salaries s on e.emp_no = s.emp_no
+ 
+ORDER BY s.salary 
+ 
+DESC LIMIT 0, 1;
+ 
+DELETE FROM employees.employees 
+ 
+WHERE emp_no = 43624;
+
+-------------result------------------------
+----Комент. НЕ знал как за одну операцию удалить из таблицы "employee" при этом используя данные из таблицы "salary"
+по этому сделал двумя операциями (нигде не нашёл примера), следовательно после удаления
+в представленной таблице селдующий сотрудник с самой макс. ЗП, как подтверждение что операция прошла успешно----
++------------+-----------+--------+------------+
+| first_name | last_name | emp_no | max_salary |
++------------+-----------+--------+------------+
+| Honesty    | Mukaidono | 254466 |     156286 |
++------------+-----------+--------+------------+
+1 row in set (5.59 sec)
+
+16:54:21	SELECT e.first_name, e.last_name,e.emp_no, MAX(s.salary) max_salary   
+FROM  employees.employees e   
+LEFT JOIN employees.salaries s on e.emp_no = s.emp_no  
+ORDER BY s.salary   
+DESC LIMIT 0, 1	
+1 row(s) returned	6.922 sec / 0.000 sec
+
+16:54:28	DELETE FROM employees.employees e   
+WHERE emp_no = 43624   LIMIT 1	
+1 row(s) affected	0.015 sec
+
+
+г)
+
+-------------request-----------------------
+SELECT d.*, m.dept_no, COUNT(m.dept_no) COUNTS
+ 
+FROM  employees.dept_emp m 
+ 
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no
+ 
+GROUP BY m.dept_no
+ HAVING COUNTS;
+
+-------------result------------------------
++---------+--------------------+---------+--------+
+| dept_no | dept_name          | dept_no | COUNTS |
++---------+--------------------+---------+--------+
+| d001    | Marketing          | d001    |  20211 |
+| d002    | Finance            | d002    |  17346 |
+| d003    | Human Resources    | d003    |  17786 |
+| d004    | Production         | d004    |  73485 |
+| d005    | Development        | d005    |  85706 |
+| d006    | Quality Management | d006    |  20117 |
+| d007    | Sales              | d007    |  52244 |
+| d008    | Research           | d008    |  21126 |
+| d009    | Customer Service   | d009    |  23580 |
++---------+--------------------+---------+--------+
+9 rows in set (0.14 sec)
+
+mysql>
+
+05:13:03	SELECT d.*, m.dept_no, COUNT(m.dept_no) COUNTS  
+FROM  employees.dept_emp m   
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no  
+GROUP BY m.dept_no 
+ HAVING COUNTS LIMIT 0, 1000	
+9 row(s) returned	0.328 sec / 0.000 sec
+
+
+
+
+д)
+
+-------------request-----------------------
+(SELECT  d.dept_name,  sum(s.salary) salary_dep 
+ 
+FROM  employees.dept_emp m 
+ 
+LEFT JOIN employees.salaries s  on m.emp_no = s.emp_no
+ 
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no
+ 
+GROUP BY  m.dept_no)
+ 
+UNION
+ 
+(SELECT  d.dept_name,  COUNT(d.dept_name) dept_employee 
+ 
+FROM  employees.dept_emp m 
+ 
+LEFT JOIN employees.employees e  on m.emp_no = e.emp_no
+ 
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no
+ 
+GROUP BY  m.dept_no);
+
+-------------result------------------------
++--------------------+-------------+
+| dept_name          | salary_dep  |
++--------------------+-------------+
+| Marketing          | 13725425266 |
+| Finance            | 11650834677 |
+| Human Resources    |  9363811425 |
+| Production         | 41554438942 |
+| Development        | 48178174781 |
+| Quality Management | 10865203635 |
+| Sales              | 40027183342 |
+| Research           | 11969730427 |
+| Customer Service   | 13143639841 |
+| Marketing          |       20211 |
+| Finance            |       17346 |
+| Human Resources    |       17786 |
+| Production         |       73485 |
+| Development        |       85706 |
+| Quality Management |       20117 |
+| Sales              |       52243 |
+| Research           |       21126 |
+| Customer Service   |       23580 |
++--------------------+-------------+
+18 rows in set (5.57 sec)
+
+19:51:43	(SELECT  d.dept_name,  sum(s.salary) salary_dep   
+FROM  employees.dept_emp m   
+LEFT JOIN employees.salaries s  on m.emp_no = s.emp_no  
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no  GROUP BY  m.dept_no) 
+ UNION  
+(SELECT  d.dept_name,  COUNT(d.dept_name) dept_employee  
+FROM  employees.dept_emp m  
+ LEFT JOIN employees.employees e  on m.emp_no = e.emp_no  
+LEFT JOIN employees.departments d ON d.dept_no = m.dept_no  
+GROUP BY  m.dept_no  )	
+18 row(s) returned	6.656 sec / 0.000 sec
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
